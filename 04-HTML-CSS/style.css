@@ -1,0 +1,58 @@
+/* use "star-id"  *  to make a global reference*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: rgb(3, 194, 194);
+  font-family: "Times New Roman", Times, serif;
+  font-size: 20px;
+  padding: 75px;
+}
+
+h1 {
+  font-size: 50px;
+  margin-bottom: 25px;
+}
+
+h2 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+p {
+  margin-bottom: 30px;
+}
+/* use the ".class-name" to set classes */
+.first {
+  font-size: 30px;
+  color: rgb(55, 255, 0);
+}
+
+#cat-image {
+  width: 500px;
+}
+
+/*  use the "#id-name" to select ids*/
+#your-name {
+  background-color: blueviolet;
+  border: 5px dotted rgb(31, 14, 43);
+  width: 400px;
+  padding: 25px;
+  margin-top: 30px;
+}
+/*  child selector --> we are selecting the h2 inside the form your-name */
+#your-name h2 {
+  color: rgb(255, 204, 0);
+}
+
+input,
+button {
+  padding: 10px;
+  font-size: 16px;
+}
+
+a {
+  background-color: chartreuse;
+}

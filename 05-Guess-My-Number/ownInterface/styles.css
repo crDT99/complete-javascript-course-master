@@ -1,0 +1,16 @@
+body {
+  background-color: #222;
+  font-family: sans-serif;
+  color: #eee;
+}
+main {
+  display: flex;
+  width: 100%;
+  background-color: rgb(159, 28, 28);
+}
+
+section {
+  display: flex;
+  width: 100%;
+  background-color: rgb(174, 0, 249);
+}

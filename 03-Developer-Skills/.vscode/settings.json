@@ -1,0 +1,6 @@
+{
+  "zenMode.fullScreen": true,
+  "zenMode.centerLayout": true,
+  "debug.focusWindowOnBreak": true,
+  "window.commandCenter": true
+}
