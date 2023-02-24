@@ -111,26 +111,22 @@ const restaurant = {
 ///////////////////////////////////////////////////////////////////////////////
 // -------------------- Looping Objects --------------------
 //***************** Using Object.Keys **************
-// property NAMES = keys
+// property NAMES = keys  --> return only the property names (keys)
 const properties = Object.keys(openingHours);
 // get an array of the values inside the object
 console.log(properties);
 /*
-    (3) ['thu', 'fri', 'sat']
-    0
-    : 
-    "thu"
-    1
-    : 
-    "fri"
-    2
-    : 
-    "sat"
+  Object.keys(openingHours) --> [key]
 
+    (3) ['thu', 'fri', 'sat']
+    0: "thu"
+    1: "fri"
+    2: "sat"
 */
 console.log(properties[0], properties[1], properties[2]);
 // ['thu', 'fri', 'sat']
-console.log(properties[0][0]);
+console.log(properties[0][0]); // t
+
 let openStr = `we are open on ${properties.length} days: `;
 // loop inside the object with For-of
 for (const day of Object.keys(openingHours)) {
@@ -139,33 +135,39 @@ for (const day of Object.keys(openingHours)) {
 console.log(openStr); // we are open on 3 days: thu, fri, sat,
 
 //***************** Using Object.values **************
-//Property VALUES
+//Property VALUES --> return all the values inside the keys
 const values = Object.values(openingHours);
 console.log(values); //(3) [{…}, {…}, {…}]
 /*
+Object.values(openingHours) --> [value]
+
 [
-    {
-        "open": 12,
-        "close": 22
-    },
-    {
-        "open": 11,
-        "close": 23
-    },
-    {
-        "open": 0,
-        "close": 24
-    }
+    {"open": 12,"close": 22},
+    {"open": 11,"close": 23},
+    {"open": 0,"close": 24}
 ]
 */
 console.log(values[0], values[1], values[2]);
-// the entries return the index number and the element
+//{open: 12, close: 22} {open: 11, close: 23} {open: 0, close: 24}
+
+//***************** Using Object.entries **************
+// the entries return the index number AND the element
 // Entire Object
 const entries = Object.entries(openingHours);
 console.log(entries); // (3) [Array(2), Array(2), Array(2)]
+/*
+Object.entries(openingHours) --> [key, value]
+[
+    ["thu", {"open": 12,  "close": 22}],
+    ["fri", {"open": 11,  "close": 23}],
+    ["sat", {"open": 0,   "close": 24}]
+]
 
-// [key, value]
+*/
+
+//
 // destructuring to get the object
+// for (const [key, value] of entries) {
 for (const [key, { open, close }] of entries) {
   console.log(`On ${key} we open at ${open} and close at ${close}`);
 }

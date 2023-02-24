@@ -63,17 +63,52 @@ const game = {
   },
 };
 
-// 1. For-of IN ARRAYS: deconstructing the entries of array goals
-const goals = game.scored;
-let Str = 'This is the goal summary: ';
+console.log('************** #1 *******************');
 
-for (const [index, element] of goals.entries()) {
-  Str = Str.concat(`\nGoal #${index}: ${element} `);
+let Str = 'This is the goal summary: ';
+// 1. For-of IN ARRAYS: deconstructing the entries of array goals
+for (const [index, element] of game.scored.entries()) {
+  // in the array we use array.entries() and in the object we use Object.entries(object)
+  Str = Str.concat(`\nGoal #${index + 1}: ${element} `);
 }
 
-//console.log(Str);
+console.log(Str);
 
-// 2. For-of IN OBJECTS:
+console.log('************** #2 *******************');
+let avg = 0,
+  sum = 0;
+const numberOfElements = Object.keys(game.odds).length;
 
-//const sum = Object.values(odds);
-//console.log();
+// 2. For-of IN OBJECTS: getting keys and values separetely
+for (const element of Object.values(game.odds)) {
+  //console.log(element);
+  sum += element;
+}
+
+avg = sum / numberOfElements;
+console.log(`the average odd for this match is: ${avg.toFixed(2)}`);
+
+// 3. deconstructing an Object
+//console.log(Object.entries(game.odds));
+/* 
+['team1', 1.33]
+['x', 3.25]
+['team2', 6.5]
+*/
+console.log('************** #3 *******************');
+for (const [key, element] of Object.entries(game.odds)) {
+  console.log(
+    `Odd of ${key === 'x' ? 'drawn' : 'victory'} ${game[key] ? game[key] : ''}: 
+    ${element}`
+  );
+}
+
+// Bonus
+console.log('************** Bonus *******************');
+const scorers = {};
+
+for (const key of Object.values(game.scored)) {
+  scorers[key] = scorers[key] ? (scorers[key] += 1) : 1;
+}
+
+console.log(scorers);
