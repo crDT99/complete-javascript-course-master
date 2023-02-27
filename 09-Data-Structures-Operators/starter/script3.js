@@ -107,6 +107,7 @@ const staff = ['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter'];
 const staffUnique = new Set(staff);
 //console.log(staffUnique); // {'Waiter', 'Chef', 'Manager'}
 
+// -----------------  SETS TO ARRAYS ----------------------
 // as SETS are iterables and the spread operator works on iterables, we can say:
 const staffUniqueArray = [...new Set(staff)];
 console.log(staffUniqueArray);
@@ -131,7 +132,7 @@ const rest = new Map(); //constructor
 
 //////////////////////////////// METHODS ////////////////////////////////
 
-// ------------------------------ SET ----------------------------
+// ------------------------------ MAP.SET ----------------------------
 // to define information in the map WE USE SET like:  MAP.set(KEY, VALUE)
 rest.set('name', 'Classico Italiano');
 rest.set(1, 'Firenze, Italy'); //the set method add, update and also returns the map
@@ -142,7 +143,7 @@ rest
   .set('close', 23)
   .set(true, 'We are Open :D')
   .set(false, 'We are closed :(');
-// ------------------------------ GET ----------------------------
+// ------------------------------ MAP.GET ----------------------------
 // TO GET INFORMATION FROM THE MAP, we use GET like:  MAP.get(KEY)
 console.log(rest.get('name'));
 console.log(rest.get(true));
@@ -152,19 +153,19 @@ console.log(rest.get(1));
 const time = 21;
 console.log(rest.get(time > rest.get('open') && time < rest.get('close')));
 
-// ------------------------------ HAS ----------------------------
+// ------------------------------ MAP.HAS ----------------------------
 // TO CHECK IF A MAP CONTAINS A VALUE, we use MAP.has(KEY)
 
 console.log(rest.has('categories'));
 
-// ------------------------------ DELETE && CLEAR ----------------------------
+// ------------------------------ MAP.DELETE && MAP.CLEAR ----------------------------
 // TO DELETE A VALUE IN THE MAP, we use MAP.delete(KEY)
 // TO DELETE ALL THE VALUES, we use MAP.clear();
 rest.delete(2);
 //rest.clear();
 //console.log(rest); // key 2 is not there anymore
 
-// ------------------------------ SIZE ----------------------------
+// ------------------------------ MAP.SIZE ----------------------------
 // TO GET THE SIZE OF THE MAP, we use MAP.size
 console.log(rest.size);
 
@@ -195,3 +196,61 @@ const question = new Map([
   [false, 'Try Again!'],
 ]);
 console.log(question);
+
+// convert Object to MAP
+console.log(Object.entries(openingHours));
+/*
+//the entries of an Object are an array the same way as the definition for the MAP above 
+
+(3) [Array(2), Array(2), Array(2)]
+
+0: (2) ['thu', {…}]
+1: (2) ['fri', {…}]
+2: (2) ['sat', {…}]
+
+so its posible to use them to declare a new MAP:
+*/
+const hoursMap = new Map(Object.entries(openingHours));
+console.log(hoursMap);
+
+// Quizz app
+console.log(question.get('question'));
+
+for (const [key, value] of question) {
+  if (typeof key === 'number') {
+    console.log(`Answer ${key}: ${value}`);
+  }
+}
+
+//const answer = Number(prompt('your answer'));
+const answer = 3;
+console.log(answer);
+
+console.log(question.get(answer === question.get('correct')));
+
+// Convert MAP to Object
+console.log([...question]);
+/*
+        [ key , value]
+0: (2) ['question', 'What is the best programming language in the world?']
+1: (2) [1, 'C']
+2: (2) [2, 'Java']
+3: (2) [3, 'JavaScript']
+4: (2) ['correct', 3]
+5: (2) [true, 'Correct! 🎉']
+6: (2) [false, 'Try Again!']
+*/
+console.log(question.entries());
+/*
+    { key => value}
+0: {"question" => "What is the best programming language in the world?"}
+1: {1 => "C"}
+2: {2 => "Java"}
+3: {3 => "JavaScript"}
+4: {"correct" => 3}
+5: {true => "Correct! 🎉"}
+6: {false => "Try Again!"}
+*/
+console.log([...question.keys()]); // ['question', 1, 2, 3, 'correct', true, false]
+
+console.log([...question.values()]); // ['What is the best programming language in the world?', 'C', 'Java', 'JavaScript', 3, 'Correct! 🎉', 'Try Again!']
