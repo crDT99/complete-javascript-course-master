@@ -104,6 +104,7 @@ console.log(normalizedEmail); // hello@jonas.io
 
 console.log(email === normalizedEmail); // true
 
+//------------  replace
 // Replacing parts of the strings
 
 const priceGB = '288,97£';
