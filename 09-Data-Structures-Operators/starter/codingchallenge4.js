@@ -38,19 +38,52 @@ const array = [
   ' delayed_departure',
 ];
 
-const toCamelCase = function (imput) {
-  // 1. locate the _ and replace it with the uppercase
-  /*
-    const camelcase = [];
-  for (const wordsinsentence of wordsImput) {
-    let wordsSeparated = wordsinsentence.;
-    console.log(wordsSeparated);
+const multiCammel = function (words) {
+  // if we are expecting sentences with multi "_"  we can separate the words by the "_" and then join the words uppercasing the first letters
+  // we can trim now because the words are separrated, and we can split by ("_")
+  const wordSeparate = words.trim().split('_');
+  let StringFull = '';
+  for (const [index, singleWord] of wordSeparate.entries()) {
+    if (index != 0) {
+      StringFull += singleWord[0].toUpperCase() + singleWord.slice(1);
+    } else {
+      StringFull += singleWord;
+    }
   }
-*/
-  const wordsImput = String(imput);
-  const normalizedImput = wordsImput.toLowerCase().trim().split('_');
-  const camelcaseWords = [];
-  console.log(normalizedImput);
+  console.log(StringFull);
+  return StringFull;
 };
 
-toCamelCase(array);
+const singleCammel = function (word) {
+  // if we are expecting sentences with only one "_" we just need to find the index of the "_" and then split the string using the index as a reference
+  word = word.trim();
+  const indexRef = word.indexOf('_');
+  word = word.replace('_', word[indexRef + 1].toUpperCase());
+  const cammel = word.slice(0, indexRef + 1) + word.slice(indexRef + 2);
+  return cammel;
+};
+
+const toCamelCase = function (imput) {
+  let rep = 0;
+  const camelcaseWords = []; // the array that will contain the final result
+
+  // 1. convert the imput to string and we put all in lowercase and separate the different words using the  "/n" as key
+  const wordsImput = String(imput);
+  const normalizedImput = wordsImput.toLowerCase().split('\n'); // this creates an array of the diferent words
+
+  // 2. we apply the multiCammel or singleCammel function
+  // then we loop over the array of composed words
+  for (const words of normalizedImput.values()) {
+    rep++;
+    // camelcaseWords.push(multiCammel(words));         //multiCammel
+    camelcaseWords.push(singleCammel(words)); //singleCammel
+    console.log(camelcaseWords[rep - 1].padEnd(20), '✅'.repeat(rep));
+  }
+
+  console.log(camelcaseWords);
+};
+
+document.querySelector('.btn-go').addEventListener('click', function () {
+  const textI = document.querySelector('#textInput').value;
+  toCamelCase(textI);
+});
