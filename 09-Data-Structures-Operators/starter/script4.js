@@ -125,7 +125,7 @@ console.log(announcement.replace(/door/g, 'gate'));
 // Booleans
 
 const plane = 'Airbus A320neo';
-// includes
+// ------------ includes
 console.log(plane.includes('A320')); //true
 console.log(plane.includes('Boeing')); //false
 // startsWith
