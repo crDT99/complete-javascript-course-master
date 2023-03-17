@@ -37,13 +37,12 @@ const poll = {
   options: ['0: JavaScript', '1: Python', '2: Rust', '3: C++'],
   // This generates [0, 0, 0, 0]. More in the next section 😃
   answers: new Array(4).fill(0),
+  // 1. Method register New Answers
   registerNewAnswer() {
-    let value = prompt(`What is your favourite programming language?
-    0: JavaScript
-    1: Python
-    2: Rust
-    3: C++
-    (Write option number)`);
+    // the answer is stred into value
+    let value = prompt(
+      `${this.question}\n${this.options.join('\n')}\n(Write option number) `
+    );
 
     if (isNaN(value)) {
       console.log(typeof value, ' no es valido ', value);
@@ -54,10 +53,28 @@ const poll = {
         console.log('Number out of limits 0-3');
       }
     }
+    this.displayResults('array');
+    this.displayResults('string');
+  },
+  // 3. Method display result
+  displayResults(type = 'array') {
+    if (type === 'array') {
+      console.log(this.answers);
+    } else if (type === 'string') {
+      console.log('Poll results are ', this.answers.join(', '));
+    }
   },
 };
 
-// use of the bind method to asociate the registerNewAnswer with the poll object instead of the button that is calling it
+const testDATA1 = [5, 2, 3];
+const testDATA2 = [1, 5, 3, 9, 6, 1];
+
+poll.displayResults.call({ answers: [5, 2, 3] }, 'array');
+poll.displayResults.call({ answers: [1, 5, 3, 9, 6, 1] }, 'string');
+
+// 2. call the method registerNewAnswer() whenever the button "Answer Poll" is pressed
 document
   .querySelector('.poll')
   .addEventListener('click', poll.registerNewAnswer.bind(poll));
+
+// use of the bind method to asociate the registerNewAnswer with the poll object instead of the button that is calling it

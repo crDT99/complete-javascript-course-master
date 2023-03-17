@@ -184,7 +184,7 @@ const book = lufthansa.book; // stored the function from lufthansa into a new va
 //book(23, 'Sarah Williams'); //Does not work because the book method is taken as a regular funcion call
 
 // --- CALL METHOD
-//the call method is a method used over other methods to specify from which object we are calling, it wors to set manually the this keyword
+//the call method is a method used over other methods to specify from which object we are calling or different entry values, it wors to set manually the this keyword
 book.call(eurowings, 23, 'Sarah Williams');
 //method.call(what this keyword should, rest of the arguments)
 
