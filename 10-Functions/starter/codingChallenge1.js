@@ -69,6 +69,7 @@ const poll = {
 const testDATA1 = [5, 2, 3];
 const testDATA2 = [1, 5, 3, 9, 6, 1];
 
+// we wan to set manually the this keyword, so we use the call method
 poll.displayResults.call({ answers: [5, 2, 3] }, 'array');
 poll.displayResults.call({ answers: [1, 5, 3, 9, 6, 1] }, 'string');
 
