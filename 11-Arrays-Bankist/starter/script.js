@@ -83,6 +83,20 @@ const displayMovements = function (movements) {
 
 displayMovements(account1.movements);
 
+const createUserNames = function (accs) {
+  // as we dont want to create a new array, just loop the array and do something in the original, que use forEach
+  accs.forEach(function (acc) {
+    acc.username = acc.owner
+      .toLocaleLowerCase()
+      .split(' ')
+      .map(name => name[0])
+      .join('');
+  });
+};
+
+createUserNames(accounts);
+console.log(accounts);
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -263,3 +277,95 @@ currenciesUnique.forEach(function (value, key, set) {
 });
 
 */
+
+// ------------------------ data transformation methods ------------------------
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+//************* Array Map Method *************
+
+/*
+const eurToUsd = 1.2;
+
+//array.map(function(value, key, array){...} );
+const movementUSD = movements.map(function (mov) {
+  return Math.round(mov * eurToUsd);
+  // return 23;
+});
+console.log(movements); //[200, 450, -400, 3000, -650, -130, 70, 1300]
+console.log(movementUSD); //[240, 540, -480, 3600, -780, -156, 84, 1560]
+
+//----------- same but using forOf 
+const movementUSDfor = [];
+for (const mov of movements) {
+  movementUSDfor.push(Math.round(mov * eurToUsd));
+}
+console.log(movementUSDfor); //[240, 540, -480, 3600, -780, -156, 84, 1560]
+
+//----- Array Map Method using arrow function -----
+
+const movementUSD_Arrow = movements.map(mov => Math.round(mov * eurToUsd));
+console.log(movementUSD_Arrow); //[240, 540, -480, 3600, -780, -156, 84, 1560]
+
+const movementsDescriptions = movements.map((movement, i, array) => {
+  if (movement > 0) {
+    return ` Movement: ${i + 1} you deposited  $${movement}`;
+  } else {
+    return ` Movement: ${i + 1} you withdrew  $${Math.abs(movement)}`;
+  }
+});
+
+console.log(movementsDescriptions);
+
+ //[
+  //' Movement: 1 you deposited  $200',
+  //' Movement: 2 you deposited  $450',
+  //' Movement: 3 you withdrew  $400', 
+  //' Movement: 4 you deposited  $3000', 
+  //' Movement: 5 you withdrew  $650', 
+  //' Movement: 6 you withdrew  $130', 
+  //' Movement: 7 you deposited  $70', 
+  //' Movement: 8 you deposited  $1300'
+ //]
+*/
+
+//************* Filter Method *************
+/*
+console.log(movements); //[200, 450, -400, 3000, -650, -130, 70, 1300]
+
+// STRUCTURE ---- array.filter(function(currentElement, index, array){}) ----- STRUCTURE
+
+const deposits = movements.filter(function (mov, i, array) {
+  return mov > 0;
+});
+console.log(deposits); //[200, 450, 3000, 70, 1300]
+
+//-- same but using for-of
+
+const depositfor = [];
+for (const mov of movements) {
+  if (mov > 0) {
+    depositfor.push(mov);
+  }
+}
+
+console.log(depositfor); //[200, 450, 3000, 70, 1300]
+
+// ------------ array of withdrawals
+
+const withdrawals = movements.filter(mov => mov < 0);
+console.log(withdrawals); // [-400, -650, -130]
+*/
+
+//************* Reduce Method *************
+//te reduce method make a sum of all the elements inside the array and returns it as a simple value
+
+console.log(movements); //[200, 450, -400, 3000, -650, -130, 70, 1300]
+//STRUCTURE---- array.reduce(function(accumulator,currentElement, index, array){}, startValue) ----- STRUCTURE
+
+//acumulator -> is the variable stored the acumulated sum (works as snowball)
+const balance = movements.reduce(function (acc, cur, i, arr) {
+  console.log(`Iteration ${i}: ${acc}`);
+  return acc + cur; // each loop we sum the current into the acumulator
+}, 0);
+
+console.log(balance);
