@@ -83,6 +83,12 @@ const displayMovements = function (movements) {
 
 displayMovements(account1.movements);
 
+const calcPrintBalance = function (movements) {
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance} €`;
+};
+calcPrintBalance(account1.movements);
+
 const createUserNames = function (accs) {
   // as we dont want to create a new array, just loop the array and do something in the original, que use forEach
   accs.forEach(function (acc) {
@@ -199,7 +205,9 @@ for (const movement of movements) {
   }
 }
 
-//************* ForEach *************
+//////////////////////////////////////////////////////////////////////////////
+
+//************************** ForEach **************************
 
 console.log('------------------- ForEach ------------------- ');
 //looping the array using ForEach
@@ -281,12 +289,18 @@ currenciesUnique.forEach(function (value, key, set) {
 // ------------------------ data transformation methods ------------------------
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-//************* Array Map Method *************
+//////////////////////////////////////////////////////////////////////////////
+
+//************************** Array Map Method **************************
+
+// STRUCTURE ---- array.map(function(value, key, array){....} ); ----- STRUCTURE
+
+// the method Array.Map allows to CREATE A NEW ARRAY from a given function, applied to the original array (the one that called the method)
 
 /*
 const eurToUsd = 1.2;
 
-//array.map(function(value, key, array){...} );
+//array.map(function(value, key, array){....} );
 const movementUSD = movements.map(function (mov) {
   return Math.round(mov * eurToUsd);
   // return 23;
@@ -327,8 +341,9 @@ console.log(movementsDescriptions);
   //' Movement: 8 you deposited  $1300'
  //]
 */
+//////////////////////////////////////////////////////////////////////////////
 
-//************* Filter Method *************
+//************************** Filter Method **************************
 /*
 console.log(movements); //[200, 450, -400, 3000, -650, -130, 70, 1300]
 
@@ -356,9 +371,10 @@ const withdrawals = movements.filter(mov => mov < 0);
 console.log(withdrawals); // [-400, -650, -130]
 */
 
-//************* Reduce Method *************
+//************************** Reduce Method **************************
 //te reduce method make a sum of all the elements inside the array and returns it as a simple value
 
+/*
 console.log(movements); //[200, 450, -400, 3000, -650, -130, 70, 1300]
 //STRUCTURE---- array.reduce(function(accumulator,currentElement, index, array){}, startValue) ----- STRUCTURE
 
@@ -368,4 +384,50 @@ const balance = movements.reduce(function (acc, cur, i, arr) {
   return acc + cur; // each loop we sum the current into the acumulator
 }, 0);
 
+//Iteration 0: 0
+//script.js:367 Iteration 1: 200
+//script.js:367 Iteration 2: 650
+//script.js:367 Iteration 3: 250
+//script.js:367 Iteration 4: 3250
+//script.js:367 Iteration 5: 2600
+//script.js:367 Iteration 6: 2470
+//script.js:367 Iteration 7: 2540
+
 console.log(balance);
+//3840
+
+//----------- same but using forOf
+let balance2 = 0;
+for (const mov of movements) {
+  balance2 += mov;
+}
+
+console.log(balance2); //3840
+
+// since REDUCE boils down the array into a single number, itcan be any number NOT JUST THE SUM
+
+// use the reduce method to get the maximun value of the movements
+
+const max = movements.reduce(
+  (acc, mov) => (acc > mov ? acc : mov),
+  movements[0]
+);
+console.log(max); //3000
+*/
+
+//************************** Chaining Methods **************************
+
+// we want to take all the deposit (positive values and then convert them to USD)
+
+// PIPELINE
+const eurToUsd = 1.1;
+const totalDepositUSD = movements
+  .filter(mov => mov > 0)
+  .map((mov, i, arr) => {
+    // console.log(arr);
+    return mov * eurToUsd;
+  })
+  //  .map(mov => mov * eurToUsd)
+  .reduce((acc, mov) => Math.round(acc + mov), 0);
+
+console.log(totalDepositUSD); //5522
