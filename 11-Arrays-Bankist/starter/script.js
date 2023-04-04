@@ -89,6 +89,29 @@ const calcPrintBalance = function (movements) {
 };
 calcPrintBalance(account1.movements);
 
+const calcDisplaySummary = function (movements) {
+  const incomes = movements
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${incomes} €`;
+
+  const outcomes = movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(outcomes)} €`;
+
+  //interest only come in the deposits
+  const interest = movements
+    .filter(mov => mov > 0)
+    .map(deposit => (deposit * 1.2) / 100)
+    .filter((interest, i, arr) => {
+      return interest >= 1;
+    })
+    .reduce((acc, interest) => acc + interest);
+  labelSumInterest.textContent = `${interest} €`;
+};
+calcDisplaySummary(account1.movements);
+
 const createUserNames = function (accs) {
   // as we dont want to create a new array, just loop the array and do something in the original, que use forEach
   accs.forEach(function (acc) {
@@ -416,7 +439,8 @@ console.log(max); //3000
 */
 
 //************************** Chaining Methods **************************
-
+/*
+//its not a good practicve to chain methods that mutates the original array
 // we want to take all the deposit (positive values and then convert them to USD)
 
 // PIPELINE
@@ -431,3 +455,31 @@ const totalDepositUSD = movements
   .reduce((acc, mov) => Math.round(acc + mov), 0);
 
 console.log(totalDepositUSD); //5522
+
+*/
+
+//************************** Find Method **************************
+/*
+// needs a callback function that returns a boolean, but DONT RETURN A WHOLE ARRAY, instead it RETURNS JUST THE FIRST ELEMENT THAT SATISFY THE CONDITION
+
+const firstWithdrawal = movements.find(mov => mov < 0);
+
+console.log(movements); // [200, 450, -400, 3000, -650, -130, 70, 1300]
+
+console.log(firstWithdrawal); // -400  --> the first element with the condition
+
+console.log(accounts);
+
+const account = accounts.find(acc => acc.owner === 'Jessica Davis');
+console.log(account);
+
+// --- same but using for-of
+
+let accountfound;
+
+for (const account of accounts) {
+  if (account.owner === 'Jessica Davis') accountfound = account;
+}
+console.log(accountfound);
+
+*/
