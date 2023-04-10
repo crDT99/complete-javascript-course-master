@@ -61,9 +61,10 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
-  movements.forEach(function (mov, index) {
+  const mov = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  mov.forEach(function (mov, index) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
     <div class="movements__row">
@@ -81,36 +82,32 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
-
-const calcPrintBalance = function (movements) {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance} €`;
+const calcPrintBalance = function (account) {
+  account.balance = account.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${account.balance} €`;
 };
-calcPrintBalance(account1.movements);
 
-const calcDisplaySummary = function (movements) {
-  const incomes = movements
+const calcDisplaySummary = function (account) {
+  const incomes = account.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${incomes} €`;
 
-  const outcomes = movements
+  const outcomes = account.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${Math.abs(outcomes)} €`;
 
   //interest only come in the deposits
-  const interest = movements
+  const interest = account.movements
     .filter(mov => mov > 0)
-    .map(deposit => (deposit * 1.2) / 100)
+    .map(deposit => (deposit * account.interestRate) / 100)
     .filter((interest, i, arr) => {
       return interest >= 1;
     })
     .reduce((acc, interest) => acc + interest);
   labelSumInterest.textContent = `${interest} €`;
 };
-calcDisplaySummary(account1.movements);
 
 const createUserNames = function (accs) {
   // as we dont want to create a new array, just loop the array and do something in the original, que use forEach
@@ -125,6 +122,112 @@ const createUserNames = function (accs) {
 
 createUserNames(accounts);
 console.log(accounts);
+
+const updateUI = function (account) {
+  // Display Movements
+  displayMovements(account.movements);
+  // Display Balance
+  calcPrintBalance(account);
+  // Display Summary
+  calcDisplaySummary(account);
+};
+
+// Event handler
+
+let currentAccount;
+btnLogin.addEventListener('click', function (event) {
+  //prevent form from submitting
+  event.preventDefault();
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+
+  console.log(currentAccount);
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // Display UI and welcome message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100;
+
+    // Clear imput fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+    updateUI(currentAccount);
+  }
+});
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiberAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+
+  inputTransferAmount.value = inputTransferTo.value = '';
+
+  if (
+    amount > 0 &&
+    receiberAcc &&
+    currentAccount.balance >= amount &&
+    receiberAcc?.username !== currentAccount.username
+  ) {
+    // Doing the Transfer
+    currentAccount.movements.push(-amount);
+    receiberAcc.movements.push(amount);
+
+    // update User Interface
+    updateUI(currentAccount);
+  }
+});
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    console.log('Elligible');
+
+    // Add Movement
+    currentAccount.movements.push(amount);
+
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
+});
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername?.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    // findindex is diferent from indexOf() because despitee both return the index of something its possible to put any kind of text inside findindex as well as it returns boolean
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    console.log(index, ' delete');
+
+    // Delete Account
+    accounts.splice(index, 1);
+
+    // Hide UI
+    containerApp.style.opacity = 0;
+  }
+
+  // Setting fields back to blanc
+  inputCloseUsername.value = inputClosePin.value = '';
+});
+
+let sorted = false;
+
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -310,7 +413,7 @@ currenciesUnique.forEach(function (value, key, set) {
 */
 
 // ------------------------ data transformation methods ------------------------
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+//const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -483,3 +586,149 @@ for (const account of accounts) {
 console.log(accountfound);
 
 */
+
+//************************** Find Index Method **************************
+
+//return the index of an element but NOT THE ELEMENT ITSELF
+
+//************************** Some and Every **************************
+//
+
+/*
+console.log(movements); //[200, 450, -400, 3000, -650, -130, 70, 1300]
+
+// EQUALITY
+// test for equality => check of any number in the array is equal to -130
+console.log(movements.includes(-130)); // true
+
+// CONDITION
+// test for a condition? use array.some
+
+// -------------- SOME
+// the some elements returns true if ANY (one) of the elements satisfy the condition
+const anyDeposit = movements.some(mov => mov > 0);
+console.log(anyDeposit);
+
+// you can use the some for testing equality too
+console.log(movements);
+
+// -------------- EVERY
+// the some elements returns true if ALL of the elements satisfy the condition
+
+// movements array [200, 450, -400, 3000, -650, -130, 70, 1300]
+console.log(movements.every(mov => mov > 0)); //false
+
+// account 4 array [430, 1000, 700, 50, 90]
+console.log(account4.movements.every(mov => mov > 0)); //true
+
+//separate callbacks
+const deposit = mov => mov > 0;
+
+console.log(movements.some(deposit)); //true
+console.log(movements.every(deposit)); //false
+console.log(movements.filter(deposit)); //[200, 450, 3000, 70, 1300]
+
+*/
+
+//************************** Flat  **************************
+
+/*
+// the FLAT method removes the nested arrays and returns a flattened array
+const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+
+console.log(arr.flat()); //[1, 2, 3, 4, 5, 6, 7, 8]
+
+// BUT the flat method only goes 1 level deep  by default when flattening the array
+const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+console.log(arrDeep.flat()); //[Array(2), 3, 4, Array(2), 7, 8]
+
+// to fix that we can specify the depht value in arguments
+console.log(arrDeep.flat(2)); //[1, 2, 3, 4, 5, 6, 7, 8]
+
+// **************** example using bank accounts
+
+// fin the balance in ALL the movements of all the accounts
+
+const accountsMovements = accounts.map(acc => acc.movements);
+// store the moevements of all accounts in a new variable in a nested way
+console.log(accountsMovements);
+//(4) [Array(8), Array(8), Array(8), Array(5)]
+//0: (8) [200, 450, -400, 3000, -650, -130, 70, 1300]
+//1: (8) [5000, 3400, -150, -790, -3210, -1000, 8500, -30]
+//2: (8) [200, -200, 340, -300, -20, 50, 400, -460]
+//3: (5) [430, 1000, 700, 50, 90]
+
+// solve it using the flat method
+const allMovements = accountsMovements.flat();
+console.log(allMovements);
+//(29) [200, 450, -400, 3000, -650, -130, 70, 1300, 5000, 3400, -150, -790, -3210, -1000, 8500, -30, 200, -200, 340, -300, -20, 50, 400, -460, 430, 1000, 700, 50, 90]
+
+//sum the values
+const overallBalance = allMovements.reduce((acc, mov) => acc + mov, 0);
+
+console.log(overallBalance); //17840
+
+// Process Chained
+
+const overallBalanceChain = accounts
+  .map(acc => acc.movements)
+  .flat()
+  .reduce((acc, mov) => acc + mov, 0);
+
+console.log(overallBalanceChain); //17840
+
+//************************** FlatMap  **************************
+
+// is the equivalent to array.map().flat() , improved for performance
+
+const overallBalanceChainFlatMap = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((acc, mov) => acc + mov, 0);
+
+console.log(overallBalanceChainFlatMap); //17840
+
+*/
+
+//************************** Sort Method  **************************
+
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+// is a JS build in method to sort arrays, it does MUTATE the original array, it convert all to Strings and then it make the sorting
+
+// STRINGS
+const owners = ['Jonas', 'Zach', 'Adam', 'Martha'];
+
+// Sorted the strings by Alphabet
+console.log(owners.sort()); //['Adam', 'Jonas', 'Martha', 'Zach']
+
+//it does MUTATE the original array
+console.log(owners); // ['Adam', 'Jonas', 'Martha', 'Zach']
+
+// NUMBERS
+// by default sort method does nt work on numbers
+
+console.log(movements); //[200, 450, -400, 3000, -650, -130, 70, 1300]
+console.log(movements.sort()); //[-130, -400, -650, 1300, 200, 3000, 450, 70]
+
+// to work in numbers its needed a callback function
+
+// sorting Ascending
+
+//movements.sort((a, b) => {
+//if (a > b) return 1; // keep order
+//if (b > a) return -1; // switch order
+//});
+
+// Solution improved
+movements.sort((a, b) => a - b);
+console.log(movements); //[-650, -400, -130, 70, 200, 450, 1300, 3000]
+
+// sorting Descending
+//movements.sort((a, b) => {
+//if (a > b) return -1; // keep order
+//if (b > a) return 1; // switch order
+//});
+
+// Solution improved
+movements.sort((a, b) => b - a);
+console.log(movements); //[3000, 1300, 450, 200, 70, -130, -400, -650]
