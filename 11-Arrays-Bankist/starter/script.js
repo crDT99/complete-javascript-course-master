@@ -530,7 +530,7 @@ for (const mov of movements) {
 
 console.log(balance2); //3840
 
-// since REDUCE boils down the array into a single number, itcan be any number NOT JUST THE SUM
+// since REDUCE boils down the array into a single number, it can be any number NOT JUST THE SUM
 
 // use the reduce method to get the maximun value of the movements
 
@@ -691,6 +691,7 @@ console.log(overallBalanceChainFlatMap); //17840
 
 //************************** Sort Method  **************************
 
+/*
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 // is a JS build in method to sort arrays, it does MUTATE the original array, it convert all to Strings and then it make the sorting
@@ -732,3 +733,189 @@ console.log(movements); //[-650, -400, -130, 70, 200, 450, 1300, 3000]
 // Solution improved
 movements.sort((a, b) => b - a);
 console.log(movements); //[3000, 1300, 450, 200, 70, -130, -400, -650]
+
+*/
+
+//************************** Create and Fill Arrays **************************
+
+/*
+
+// Definiton by hand
+
+const arr = [1, 2, 3, 4, 5, 6, 7]; //[1, 2, 3, 4, 5, 6, 7]
+
+//with constructor
+console.log(new Array(1, 2, 3, 4, 5, 6, 7)); //[1, 2, 3, 4, 5, 6, 7]
+
+//programatically
+
+//a single value as a parameter determines the initial array lenght
+
+const x = new Array(7); //[empty × 7]
+
+// ----------- FILL METHOD ---------------
+// the fill method can fill empty arrays or mutate existing ones
+
+//STRUCTURE---- array.fill(value , begin, end) ----- STRUCTURE
+
+// to fill the empty array, the map method is not recommended, use fill instead
+// x.fill(1); //[1, 1, 1, 1, 1, 1, 1]
+
+// array.fill(value , begin, end)
+x.fill(1, 3, 5);
+console.log(x);
+
+// ----------- FROM METHOD ---------------
+// allows to create arrays from iterables (like maps, sets , querySelectorAll , etc)
+
+//STRUCTURE---- array.from( origin , mappingFunction()) ----- STRUCTURE
+
+//array full of one number
+const y = Array.from({ length: 7 }, () => 1);
+console.log(y); // [1, 1, 1, 1, 1, 1, 1]
+
+// ascendant array 1-7
+const z = Array.from({ length: 7 }, (curr, i) => i + 1);
+console.log(z); //[1, 2, 3, 4, 5, 6, 7]
+
+// array of 100 random  6-faced dice rolls
+
+const diceRolls = Array.from(
+  { length: 100 },
+  () => Math.floor(Math.random() * 6) + 1
+);
+//console.log(diceRolls);
+
+//calculate the sum of the movements USING THE UI TO GET THE MOVEMENTS
+
+labelBalance.addEventListener('click', function () {
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', ''))
+  );
+  console.log(movementsUI);
+
+  // form 2
+
+  const movementsUI2 = [...document.querySelectorAll('.movements__value')];
+  console.log(movementsUI2);
+});
+
+*/
+
+//************************** Summary **************************
+// --- //  ---- // --- //  ---- // --- //  ---- // ----
+
+// ~~~~~~~~~~  MUTATE ORIGINAL ARRAY  ~~~~~~~~~~
+
+//----- ADD TO ORIGINAL ------
+// .PUSH (end)
+// .UNSHIFT (start)
+
+//...
+
+//----- REMOVE FROM ORIGINAL ------
+// .POP (end)
+// .SHIFT (start)
+// .SPLICE (any)
+
+//...
+
+//----- REMOVE FROM ORIGINAL ------
+// .POP (end)
+// .SHIFT (start)
+// .SPLICE (any)
+
+//...
+
+//----- OTHERS ------
+// .REVERSE
+// .SORT
+// .FILL
+
+// --- //  ---- // --- //  ---- // --- //  ---- // ----
+
+// ~~~~~~~~~~ CREATE NEW ARRAY ~~~~~~~~~~
+
+// ----- COMPUTED FROM ORIGINAL -----
+// .MAP (loop)
+
+//...
+
+//----- FILTERED USING CONDITION -----
+// .FILTER
+
+//...
+
+//----- PORTION OF ORIGINAL -----
+// .SLICE
+
+//...
+
+//----- ADDING ORIGINAL TO OTHER ---
+// .CONCAT
+
+//...
+
+//----- FLATTENING THE ORIGINAL ---
+// .FLAT
+// .FLATMAP
+
+// --- //  ---- // --- //  ---- // --- //  ---- // ----
+
+// ~~~~~~~~~~ GET ARRAY INDEX ~~~~~~~~~~
+
+// ----- BASED ON VALUE -----
+// .INDEXOF
+
+//...
+
+//----- BASED ON TEST CONDITION -----
+// .FINDINDEX
+
+//...
+
+// --- //  ---- // --- //  ---- // --- //  ---- // ----
+
+// ~~~~~~~~~~ GET ARRAY ELEMENT ~~~~~~~~~~
+
+//----- BASED ON TEST CONDITION -----
+// .FIND
+
+//...
+
+// --- //  ---- // --- //  ---- // --- //  ---- // ----
+//  ~~~~~~~~~~ KNOW IF ARRAY INCLUDES SOMETHING ~~~~~~~~~~
+
+// ----- BASED ON VALUE -----
+// .INCLUDES
+
+//...
+
+//----- BASED ON TEST CONDITION -----
+// .SOME
+// .EVERY
+
+//...
+
+// --- //  ---- // --- //  ---- // --- //  ---- // ----
+// ~~~~~~~~~~ GET A NEW STRING ~~~~~~~~~~
+
+// ----- BASED ON SEPARATOR STRING -----
+// .JOIN
+
+//...
+
+// --- //  ---- // --- //  ---- // --- //  ---- // ----
+// ~~~~~~~~~~ TRANSFORM TO VALUE ~~~~~~~~~~
+
+// ----- BASED ON ACUMULATOR -----
+// .REDUCE
+
+//...
+
+// --- //  ---- // --- //  ---- // --- //  ---- // ----
+// ~~~~~~~~~~ LOOP ARRAY ~~~~~~~~~~
+
+// ----- BASED ON CALLBACK -----
+// .FOREACH
