@@ -1,3 +1,5 @@
+'use strict';
+
 // OBJECT.CREATE  manually set the prototype of an object to any other object
 
 // create a prototype object literal
