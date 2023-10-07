@@ -1,11 +1,18 @@
 import * as model from './model.js';
 import recipeView from './views/recipeView.js';
+import searchView from './views/searchView.js';
+import resultsView from './views/resultsView.js';
+import paginationView from './views/paginationView.js';
+import bookmarksView from './views/bookmarksView.js';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime'; //pollyfilling asycn await
-import recipeView from './views/recipeView.js';
+//import { async } from 'regenerator-runtime';
 
-const recipeContainer = document.querySelector('.recipe');
+// parcel only code
+// if (module.hot) {
+//   module.hot.accept();
+// }
 
 const timeout = function (s) {
   return new Promise(function (_, reject) {
@@ -15,33 +22,91 @@ const timeout = function (s) {
   });
 };
 
-// https://forkify-api.herokuapp.com/v2
-
-///////////////////////////////////////
-
 const controlRecipes = async function () {
   try {
     const id = window.location.hash.slice(1);
-    console.log('this is the id:' + id);
 
     if (!id) return;
     recipeView.renderSpinner();
 
-    // 1) loading recipe
+    // 0) Update results view to mark selected search results
+    resultsView.update(model.getSearchResultsPage());
+
+    // 1) Updating Bookmarks view
+    bookmarksView.update(model.state.bookmarks);
+
+    // 2) loading recipe
     await model.loadRecipe(id);
 
-    // 2) Rendering Recipe
+    // 3) Rendering Recipe
     recipeView.render(model.state.recipe);
   } catch (err) {
-    alert(err);
+    recipeView.renderError();
+    console.log(err);
   }
 };
 
-//multiple events has the  same function:
-// window.addEventListener('hashchange', controlRecipes);
-// window.addEventListener('load', controlRecipes);
+const controlSearchResults = async function () {
+  try {
+    resultsView.renderSpinner();
+    console.log(resultsView);
+    // 1). Get seach query
+    const query = searchView.getQuery();
+    if (!query) return;
 
-//solution
-['hashchange', 'load'].forEach(ev =>
-  window.addEventListener(ev, controlRecipes)
-);
+    // 2). Search Result
+    await model.loadSearchResults(query);
+
+    // 3). Render Results
+    resultsView.render(model.getSearchResultsPage());
+
+    // 4). Render initial pagination buttons
+    paginationView.render(model.state.search);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const controlServings = function (newServings) {
+  // Update the recipe servings in state
+  model.updateServings(newServings);
+  // Update the recipe view
+  // recipeView.render(model.state.recipe);
+  recipeView.update(model.state.recipe);
+};
+
+const controlPagination = function (goToPage) {
+  console.log(' we are going too ' + goToPage);
+  //Render NEW Results
+  resultsView.render(model.getSearchResultsPage(goToPage));
+
+  //Render NEW pagination buttons
+  paginationView.render(model.state.search);
+};
+
+const controlAddBookmark = function () {
+  // 1) Add or Remove bookmark
+  if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
+  else model.deleteBookmark(model.state.recipe.id);
+
+  // 2) update recipe view
+  recipeView.update(model.state.recipe);
+
+  // 3) Render bookmarks
+  bookmarksView.render(model.state.bookmarks);
+};
+
+const controlBookmarks = function () {
+  bookmarksView.render(model.state.bookmarks);
+};
+
+const init = function () {
+  bookmarksView.addHandlerRender(controlBookmarks);
+  recipeView.addHandlerRender(controlRecipes);
+  recipeView.addHandlerUpdateServing(controlServings);
+  recipeView.addHandlerAddBookmark(controlAddBookmark);
+  searchView.addHandlerSearch(controlSearchResults);
+  paginationView.addHandlerClick(controlPagination);
+};
+
+init();
