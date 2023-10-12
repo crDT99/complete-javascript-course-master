@@ -675,7 +675,7 @@ const controlAddRecipe = async function(newRecipe) {
         // Render Recipe
         (0, _recipeViewJsDefault.default).render(_modelJs.state.recipe);
         // Succes Message
-        (0, _addRecipeViewJsDefault.default).renderMessage();
+        (0, _addRecipeViewJsDefault.default).renderMessage(undefined);
         // Render Bookmark View
         (0, _bookmarksViewJsDefault.default).render(_modelJs.state.bookmarks);
         // Change ID in the URL
@@ -683,15 +683,15 @@ const controlAddRecipe = async function(newRecipe) {
         // Close Form Window
         setTimeout(function() {
             (0, _addRecipeViewJsDefault.default).toggleWindow();
-            (0, _addRecipeViewJsDefault.default)._restoreForm();
         }, (0, _configJs.MODAL_CLOSE_SEC) * 1000);
     } catch (error) {
         console.log("\uD83D\uDCA5", error);
         (0, _addRecipeViewJsDefault.default).renderError(error.message);
-        setTimeout(function() {
-            (0, _addRecipeViewJsDefault.default).toggleWindow();
-            (0, _addRecipeViewJsDefault.default)._restoreForm();
-        }, (0, _configJs.MODAL_CLOSE_SEC) * 2000);
+        (0, _addRecipeViewJsDefault.default).keepValues = true;
+    // setTimeout(function () {
+    //   addRecipeView.toggleWindow();
+    //   addRecipeView._restoreForm(true);
+    // }, MODAL_CLOSE_SEC * 2000);
     }
 };
 // publisher subscriber pattern
@@ -3473,6 +3473,7 @@ var _viewJs = require("./View.js");
 var _viewJsDefault = parcelHelpers.interopDefault(_viewJs);
 var _iconsSvg = require("url:../../img/icons.svg");
 var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
+let data2;
 class AddRecipeView extends (0, _viewJsDefault.default) {
     _parentElement = document.querySelector(".upload");
     _message = "Recipe was succesfully uploaded =D ";
@@ -3480,6 +3481,7 @@ class AddRecipeView extends (0, _viewJsDefault.default) {
     _overlay = document.querySelector(".overlay");
     _btnOpen = document.querySelector(".nav__btn--add-recipe");
     _btnClose = document.querySelector(".btn--close-modal");
+    keepValues = false;
     constructor(){
         super();
         this._addHandlerShowWindow();
@@ -3490,7 +3492,12 @@ class AddRecipeView extends (0, _viewJsDefault.default) {
         this._window.classList.toggle("hidden");
     }
     _addHandlerShowWindow() {
-        this._btnOpen.addEventListener("click", this.toggleWindow.bind(this));
+        // this._btnOpen.addEventListener('click', this.toggleWindow.bind(this));
+        // this._btnOpen.addEventListener('click', this._restoreForm);
+        this._btnOpen.addEventListener("click", ()=>{
+            this.toggleWindow();
+            this._restoreForm();
+        });
     }
     _addHandlerHideWindow() {
         this._btnClose.addEventListener("click", this.toggleWindow.bind(this));
@@ -3505,33 +3512,35 @@ class AddRecipeView extends (0, _viewJsDefault.default) {
             ];
             //convert entries to objects
             const data = Object.fromEntries(dataArr);
+            data2 = Object.assign({}, data);
             handler(data);
         });
     }
     _restoreForm() {
+        console.log("Im restoring ... ");
         const markup = `
             <form class="upload">
             <div class="upload__column">
               <h3 class="upload__heading">Recipe data</h3>
               <label>Title</label>
-              <input value="" required name="title" type="text" />
+              <input value="${this.keepValues ? data2.title : ""}" required name="title" type="text" />
               <label>URL</label>
-              <input value="" required name="sourceUrl" type="text" />
+              <input value="${this.keepValues ? data2.sourceUrl : ""}" required name="sourceUrl" type="text" />
               <label>Image URL</label>
-              <input value="" required name="image" type="text" />
+              <input value="${this.keepValues ? data2.image : ""}" required name="image" type="text" />
               <label>Publisher</label>
               <input value="" required name="publisher" type="text" />
               <label>Prep time</label>
-              <input value="" required name="cookingTime" type="number" />
+              <input value="${this.keepValues ? data2.cookingTime : ""}" required name="cookingTime" type="number" />
               <label>Servings</label>
-              <input value="" required name="servings" type="number" />
+              <input value="${this.keepValues ? data2.servings : ""}" required name="servings" type="number" />
             </div>
 
             <div class="upload__column">
               <h3 class="upload__heading">Ingredients</h3>
               <label>Ingredient 1</label>
               <input
-                value=""
+                value="${this.keepValues ? data2["ingredient-1"] : ""}"
                 type="text"
                 required
                 name="ingredient-1"
@@ -3539,32 +3548,35 @@ class AddRecipeView extends (0, _viewJsDefault.default) {
               />
               <label>Ingredient 2</label>
               <input
-                value=""
+                value="${this.keepValues ? data2["ingredient-2"] : ""}"
                 type="text"
                 name="ingredient-2"
                 placeholder="Format: 'Quantity,Unit,Description'"
               />
               <label>Ingredient 3</label>
               <input
-                value=""
+                value="${this.keepValues ? data2["ingredient-3"] : ""}"
                 type="text"
                 name="ingredient-3"
                 placeholder="Format: 'Quantity,Unit,Description'"
               />
               <label>Ingredient 4</label>
               <input
+                value = "${this.keepValues ? data2["ingredient-4"] : ""}"
                 type="text"
                 name="ingredient-4"
                 placeholder="Format: 'Quantity,Unit,Description'"
               />
               <label>Ingredient 5</label>
               <input
+                value = "${this.keepValues ? data2["ingredient-5"] : ""}"
                 type="text"
                 name="ingredient-5"
                 placeholder="Format: 'Quantity,Unit,Description'"
               />
               <label>Ingredient 6</label>
               <input
+                value = "${this.keepValues ? data2["ingredient-6"] : ""}"
                 type="text"
                 name="ingredient-6"
                 placeholder="Format: 'Quantity,Unit,Description'"
@@ -3581,6 +3593,7 @@ class AddRecipeView extends (0, _viewJsDefault.default) {
         `;
         this._clear();
         this._parentElement.insertAdjacentHTML("afterbegin", markup);
+        this.keepValues = false;
     }
 }
 exports.default = new AddRecipeView();

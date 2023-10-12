@@ -116,7 +116,7 @@ const controlAddRecipe = async function (newRecipe) {
     recipeView.render(model.state.recipe);
 
     // Succes Message
-    addRecipeView.renderMessage();
+    addRecipeView.renderMessage(undefined);
 
     // Render Bookmark View
     bookmarksView.render(model.state.bookmarks);
@@ -127,15 +127,15 @@ const controlAddRecipe = async function (newRecipe) {
     // Close Form Window
     setTimeout(function () {
       addRecipeView.toggleWindow();
-      addRecipeView._restoreForm();
     }, MODAL_CLOSE_SEC * 1000);
   } catch (error) {
     console.log('💥', error);
     addRecipeView.renderError(error.message);
-    setTimeout(function () {
-      addRecipeView.toggleWindow();
-      addRecipeView._restoreForm();
-    }, MODAL_CLOSE_SEC * 2000);
+    addRecipeView.keepValues = true;
+    // setTimeout(function () {
+    //   addRecipeView.toggleWindow();
+    //   addRecipeView._restoreForm(true);
+    // }, MODAL_CLOSE_SEC * 2000);
   }
 };
 
